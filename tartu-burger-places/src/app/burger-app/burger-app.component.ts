@@ -1,15 +1,15 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {RouterOutlet} from '@angular/router';
-import {GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker} from '@angular/google-maps';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {bussijaamCoordinates, tartuCoordinates} from './constants';
-import {BurgerPlace, BurgerPlacePhoto} from './types';
-import {BurgerAppService} from './burger-app.service';
-import {HttpErrorResponse} from "@angular/common/http";
-import {lastValueFrom} from "rxjs";
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { bussijaamCoordinates, tartuCoordinates } from './constants';
+import { BurgerPlace, BurgerPlacePhoto } from './types';
+import { BurgerAppService } from './burger-app.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'burger-app',
+  selector: 'app-burger',
   standalone: true,
   imports: [RouterOutlet, GoogleMapsModule, GoogleMap, NgForOf, NgIf, NgClass],
   templateUrl: './burger-app.component.html',

@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
 import { BurgerAppService } from './burger-app.service';
-import {HttpClient, HttpClientModule} from "@angular/common/http";
-import {HttpClientTestingModule, HttpTestingController} from "@angular/common/http/testing";
-import { environment } from "../environments/environment.development";
-import {bussijaamCoordinates, tartuCoordinates} from "./constants";
+import { HttpClientModule} from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import { environment } from '../environments/environment.development';
+import { bussijaamCoordinates, tartuCoordinates } from './constants';
 
 describe('BurgerAppService', () => {
   let service: BurgerAppService;
@@ -31,7 +31,7 @@ describe('BurgerAppService', () => {
       limit: 50,
       radius: 10000
     }
-    let FQBurgerVenuesURL: string =
+    const FQBurgerVenuesURL: string =
       `${environment.FSApiUrl}search?ll=${getParamas.ll}&query=${getParamas.query}&limit=${getParamas.limit}&radius=${getParamas.radius}`;
     const venueList: any[] = [];
     service.getBurgerVenues().subscribe({next: venues => {
@@ -50,7 +50,7 @@ describe('BurgerAppService', () => {
       limit: 50,
       radius: 1000
     }
-    let FQBurgerVenuesURL: string =
+    const FQBurgerVenuesURL: string =
       `${environment.FSApiUrl}search?ll=${getParamas.ll}&query=${getParamas.query}&limit=${getParamas.limit}&radius=${getParamas.radius}`;
     const venueList: any[] = [];
     service.getBurgerVenues(true).subscribe({next: venues => {
@@ -64,7 +64,7 @@ describe('BurgerAppService', () => {
 
   it('should return burger venue pictures', () => {
     const burgerPlaceId: string = "1";
-    let FQBurgerVenuePhotosURL: string =
+    const FQBurgerVenuePhotosURL: string =
       `${environment.FSApiUrl}${burgerPlaceId}/photos`;
     const photoList: any[] = [];
     service.getBurgerVenuePhoto(burgerPlaceId).subscribe({next: photos => {
@@ -79,7 +79,7 @@ describe('BurgerAppService', () => {
   it('should return burger picture from list of pictures', () => {
     const urls: string[] = ["image1", "image2"];
     const imageWithBurger: string = "";
-    let imageRecUrl: string = "https://73kh1kvgx4.execute-api.eu-west-1.amazonaws.com/prod/recognize";
+    const imageRecUrl: string = "https://73kh1kvgx4.execute-api.eu-west-1.amazonaws.com/prod/recognize";
     service.getPicturesWithBurger(urls).subscribe({next: url => {
         expect(url).toEqual(imageWithBurger);
       }

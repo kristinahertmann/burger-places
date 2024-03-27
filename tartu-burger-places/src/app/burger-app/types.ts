@@ -7,7 +7,6 @@ export interface BurgerPlace {
   id: string;
   name: string;
   location: Position;
-  photo?: any;
 }
 
 export interface BurgerPlacePhoto {

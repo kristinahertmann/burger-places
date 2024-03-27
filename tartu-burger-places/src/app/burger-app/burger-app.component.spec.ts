@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BurgerAppComponent } from './burger-app.component';
-import { HttpClientModule } from "@angular/common/http";
-import {BurgerAppService} from "./burger-app.service";
-import {of, throwError} from "rxjs";
-import {BurgerPlace, BurgerPlacePhoto} from "./types";
+import { HttpClientModule } from '@angular/common/http';
+import {BurgerAppService} from './burger-app.service';
+import { of } from 'rxjs';
+import { BurgerPlace } from './types';
 
 describe('BurgerAppComponent', () => {
   let component: BurgerAppComponent;
