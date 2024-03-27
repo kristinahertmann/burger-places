@@ -7,7 +7,9 @@ import { bussijaamCoordinates, tartuCoordinates } from "./constants";
   providedIn: 'root'
 })
 export class BurgerAppService {
+
   constructor(private _http: HttpClient) { }
+
   public getBurgerVenues(isFromBussijaam?: boolean) {
     return this._http.get(environment.FSApiUrl + 'search', {
       headers: {
@@ -23,6 +25,7 @@ export class BurgerAppService {
       }
     });
   }
+
   public getBurgerVenuePhoto(id: string) {
     return this._http.get(environment.FSApiUrl + id + '/photos', {
       headers: {
@@ -30,6 +33,7 @@ export class BurgerAppService {
         Authorization: environment.FSAccessToken,
       }});
   }
+
   public getPicturesWithBurger(urls: string[]) {
     return this._http.post("https://73kh1kvgx4.execute-api.eu-west-1.amazonaws.com/prod/recognize", {
       headers: {

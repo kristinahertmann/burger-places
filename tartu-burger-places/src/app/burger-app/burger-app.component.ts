@@ -30,16 +30,19 @@ export class BurgerAppComponent implements OnInit {
     center: bussijaamCoordinates,
     radius: 1000,
   }
+
   public allBurgerPlaces: BurgerPlace[] = [];
   public excludedBurgerPlaces: BurgerPlace[] = [];
   public burgerPlaces: BurgerPlace[] = [];
   public burgerPlacesPhotos: BurgerPlacePhoto[] = [];
+
   constructor(public service: BurgerAppService) {}
 
   ngOnInit(): void {
     this.loadingText = 'Getting data...'
     this.getExcludedBurgerPlaces().then();
   }
+
   public async getExcludedBurgerPlaces(): Promise<void> {
     const excludedVenues$ = this.service.getBurgerVenues(true);
     const excludedVenues: any = await lastValueFrom(excludedVenues$);
@@ -52,6 +55,7 @@ export class BurgerAppComponent implements OnInit {
     })
     this.getAllBurgerPlaces().then();
   }
+
   public async getAllBurgerPlaces(): Promise<void> {
     const allVenues$ = this.service.getBurgerVenues();
     const allVenues: any = await lastValueFrom(allVenues$);
@@ -64,6 +68,7 @@ export class BurgerAppComponent implements OnInit {
     })
     this.filterBurgerPlaces();
   }
+
   public filterBurgerPlaces(): void {
     this.burgerPlaces = this.allBurgerPlaces.filter(place =>
       !this.excludedBurgerPlaces.map(exPlace => exPlace.name).includes(place.name));
@@ -82,6 +87,7 @@ export class BurgerAppComponent implements OnInit {
       this.isPictureWithBurger(urls, placeId);
     }
   }
+
   public isPictureWithBurger(urls: string[], id: string): void {
     this.service.getPicturesWithBurger(urls).subscribe((response: any) => {
       this.burgerPlacesPhotos.push({id: id, picture: response.urlWithBurger, isBurgerPicture: true})
@@ -91,6 +97,7 @@ export class BurgerAppComponent implements OnInit {
       }
     });
   }
+
   public openInfoWindow(marker: MapMarker, name: string): void {
     if (this.infoWindowsView) {
       this.infoWindowsView.forEach((window: MapInfoWindow) => {
@@ -99,4 +106,5 @@ export class BurgerAppComponent implements OnInit {
       });
     }
   }
+
 }
