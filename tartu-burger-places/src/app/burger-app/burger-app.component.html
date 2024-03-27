@@ -26,7 +26,7 @@
       </google-map>
     </div>
   </div>
-  <div class="image-grid">
+  <div *ngIf="burgerPlaces.length > 0" class="image-grid">
     <img *ngFor="let pic of burgerPlacesPhotos" [src]="pic.picture"
          [ngClass]="{'burger-border': pic.isBurgerPicture}"
          alt="burger" class="burger-pic"/>
