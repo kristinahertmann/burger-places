@@ -1,0 +1,34 @@
+<div class="container">
+  <div class="flex-container">
+    <div class="flex-auto">
+      <h1>{{ title }}</h1>
+    </div>
+    <div>
+      <h3>{{loadingText}}</h3>
+    </div>
+  </div>
+  <div *ngIf="burgerPlaces.length > 0" class="flex-container">
+    <div class="flex-auto">
+      <google-map
+        height="500px"
+        width="100%"
+        [options]="mapOptions">
+        <map-marker #marker="mapMarker"
+                    *ngFor="let place of burgerPlaces"
+                    [position]="place.location"
+                    [clickable]="true"
+                    [title]="place.name"
+                    (mapClick)="openInfoWindow(marker, place.name)"
+        >
+          <map-info-window>{{ placeName }}</map-info-window>
+        </map-marker>
+        <map-circle [options]="circleOptions" ></map-circle>
+      </google-map>
+    </div>
+  </div>
+  <div class="image-grid">
+    <img *ngFor="let pic of burgerPlacesPhotos" [src]="pic.picture"
+         [ngClass]="{'burger-border': pic.isBurgerPicture}"
+         alt="burger" class="burger-pic"/>
+  </div>
+</div>

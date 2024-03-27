@@ -1,0 +1,47 @@
+
+.container {
+  padding: 3rem;
+  min-height: 100%;
+  background: rgb(63,94,251);
+  background: linear-gradient(225deg, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%);
+}
+.flex-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.container > div {
+  padding-bottom: 1rem;
+}
+
+.flex-auto {
+  flex: auto;
+}
+
+h1, h3 {
+  margin-bottom: 0!important;
+  color: white;
+}
+
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.burger-pic {
+  flex: 1 0 21%;
+  margin: 5px;
+  height: 300px;
+}
+
+.burger-border {
+  border: 5px solid white;
+}
+
+@media only screen and (max-width: 600px) {
+  .burger-pic {
+    display: block;
+    width: 100%;
+    margin: 5px;
+  }
+}
