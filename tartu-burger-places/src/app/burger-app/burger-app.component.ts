@@ -1,12 +1,13 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import {} from 'google.maps';
-import { RouterOutlet } from '@angular/router';
-import { GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
+import {GoogleMap, GoogleMapsModule, MapInfoWindow, MapMarker} from '@angular/google-maps';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
-import { bussijaamCoordinates, tartuCoordinates } from './constants';
+import {bussijaamCoordinates, tartuCoordinates} from './constants';
 import {BurgerPlace, BurgerPlacePhoto} from './types';
-import { BurgerAppService } from './burger-app.service';
+import {BurgerAppService} from './burger-app.service';
 import {HttpErrorResponse} from "@angular/common/http";
+import {lastValueFrom} from "rxjs";
+
 @Component({
   selector: 'burger-app',
   standalone: true,
@@ -29,48 +30,64 @@ export class BurgerAppComponent implements OnInit {
     center: bussijaamCoordinates,
     radius: 1000,
   }
-  private allBurgerPlaces: BurgerPlace[] = [];
-  private excludedBurgerPlaces: BurgerPlace[] = [];
+  public allBurgerPlaces: BurgerPlace[] = [];
+  public excludedBurgerPlaces: BurgerPlace[] = [];
   public burgerPlaces: BurgerPlace[] = [];
   public burgerPlacesPhotos: BurgerPlacePhoto[] = [];
-  constructor(private service: BurgerAppService) {}
+  constructor(public service: BurgerAppService) {}
 
   ngOnInit(): void {
-    this.getExcludedBurgerPlaces(true);
+    this.loadingText = 'Getting data...'
+    this.getExcludedBurgerPlaces().then();
   }
-  private filterBurgerPlaces(): void {
+  public async getExcludedBurgerPlaces(): Promise<void> {
+    const excludedVenues$ = this.service.getBurgerVenues(true);
+    const excludedVenues: any = await lastValueFrom(excludedVenues$);
+    excludedVenues.results.forEach((place: any) => {
+      this.excludedBurgerPlaces.push({
+        id: place.fsq_id,
+        name: place.name,
+        location: {lat: place.geocodes.main.latitude, lng: place.geocodes.main.longitude},
+      })
+    })
+    this.getAllBurgerPlaces().then();
+  }
+  public async getAllBurgerPlaces(): Promise<void> {
+    const allVenues$ = this.service.getBurgerVenues();
+    const allVenues: any = await lastValueFrom(allVenues$);
+    allVenues.results.forEach((place: any) => {
+      this.allBurgerPlaces.push({
+        id: place.fsq_id,
+        name: place.name,
+        location: {lat: place.geocodes.main.latitude, lng: place.geocodes.main.longitude},
+      })
+    })
+    this.filterBurgerPlaces();
+  }
+  public filterBurgerPlaces(): void {
     this.burgerPlaces = this.allBurgerPlaces.filter(place =>
       !this.excludedBurgerPlaces.map(exPlace => exPlace.name).includes(place.name));
     this.loadingText = '';
     this.burgerPlaces.forEach((place: BurgerPlace) => this.getVenuePhotos(place.id));
   }
 
-  private getExcludedBurgerPlaces(isExcludedPlaces?: boolean): void {
-    this.loadingText = 'Getting data...'
-    this.service.getBurgerVenues(isExcludedPlaces).subscribe((response: any) => {
-      if (response) {
-        response.results.forEach((place: any) => {
-          this.excludedBurgerPlaces.push({
-            id: place.fsq_id,
-            name: place.name,
-            location: {lat: place.geocodes.main.latitude, lng: place.geocodes.main.longitude}
-          })
-        })
-        this.getAllBurgerPlaces();
-      }
-    });
+  public async getVenuePhotos(placeId: string): Promise<void> {
+    const burgerVenuePhotos$ = this.service.getBurgerVenuePhoto(placeId);
+    const burgerVenuePhotos: any = await lastValueFrom(burgerVenuePhotos$);
+    const urls: string[] = [];
+    if (burgerVenuePhotos.length) {
+      burgerVenuePhotos.forEach((item: any) => {
+        urls.push(item.prefix + "original" + item.suffix)
+      })
+      this.isPictureWithBurger(urls, placeId);
+    }
   }
-  private getAllBurgerPlaces(): void {
-    this.service.getBurgerVenues().subscribe((response: any) => {
-      if (response) {
-        response.results.forEach((place: any) => {
-          this.allBurgerPlaces.push({
-            id: place.fsq_id,
-            name: place.name,
-            location: {lat: place.geocodes.main.latitude, lng: place.geocodes.main.longitude},
-          })
-        })
-       this.filterBurgerPlaces();
+  public isPictureWithBurger(urls: string[], id: string): void {
+    this.service.getPicturesWithBurger(urls).subscribe((response: any) => {
+      this.burgerPlacesPhotos.push({id: id, picture: response.urlWithBurger, isBurgerPicture: true})
+    }, (error: HttpErrorResponse) => {
+      if (error.error.error === "No Burger For You" && error.status === 404) {
+        this.burgerPlacesPhotos.push({id: id, picture: urls[0], isBurgerPicture: false})
       }
     });
   }
@@ -81,25 +98,5 @@ export class BurgerAppComponent implements OnInit {
         window.open(marker);
       });
     }
-  }
-  private getVenuePhotos(placeId: string): void {
-    this.service.getBurgerVenuePhoto(placeId).subscribe((response: any) => {
-      const urls: string[] = [];
-      if (response.length) {
-        response.forEach((item: any) => {
-          urls.push(item.prefix + "original" + item.suffix)
-        })
-        this.isPictureWithBurger(urls, placeId);
-      }
-    });
-  }
-  private isPictureWithBurger(urls: string[], id: string): void {
-    this.service.getPicturesWithBurger(urls).subscribe((response: any) => {
-      this.burgerPlacesPhotos.push({id: id, picture: response.urlWithBurger, isBurgerPicture: true})
-    }, (error: HttpErrorResponse) => {
-      if (error.error.error === "No Burger For You" && error.status === 404) {
-        this.burgerPlacesPhotos.push({id: id, picture: urls[0], isBurgerPicture: false})
-      }
-    });
   }
 }

@@ -1,22 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import {async} from "rxjs";
-import {BurgerAppComponent} from "./burger-app/burger-app.component";
-import {NO_ERRORS_SCHEMA} from "@angular/core";
+import { BurgerAppComponent } from "./burger-app/burger-app.component";
+import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { HttpClientModule } from "@angular/common/http";
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
-    }).compileComponents();
-  });
-
-  beforeEach(async () => {
-    TestBed.configureTestingModule({
-      declarations: [ BurgerAppComponent ],
+      imports: [AppComponent, BurgerAppComponent, HttpClientModule],
       schemas: [NO_ERRORS_SCHEMA]
-    })
-      .compileComponents();
+    }).compileComponents();
   });
 
   it('should create the app', () => {
